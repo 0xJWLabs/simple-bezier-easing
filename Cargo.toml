@@ -1,6 +1,6 @@
 [package]
 name = "simple-bezier-easing"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A library for calculating cubic Bézier curves using De Casteljau's algorithm."
 keywords = ["bezier", "easing", "curve"]
@@ -9,6 +9,3 @@ authors = ["0xJWLabs <0xJWLabs@gmail.com>"]
 homepage = "https://github.com/0xJWLabs/simple-bezier-easing"
 repository = "https://github.com/0xJWLabs/simple-bezier-easing"
 license = "MIT"
-
-[dependencies]
-thiserror = "2.0.4"

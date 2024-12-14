@@ -13,7 +13,10 @@
 //! - **Precision Control**: Allows customization of the precision for the binary subdivision process
 //!   and handles edge cases gracefully, such as very small slopes or extreme control point values.
 
-use thiserror::Error;
+use std::{
+    error::Error,
+    fmt::{Display, Formatter, Result as FmtResult},
+};
 
 /// The precision used for binary subdivision in the Bézier curve evaluation.
 ///
@@ -38,15 +41,37 @@ const MIN_SLOPE: f32 = 0.001;
 const SUBDIVISION_MAX_ITERATIONS: u32 = 10;
 
 /// Custom errors for handling Bézier curve computations.
-#[derive(Debug, Error)]
+#[derive(Debug)]
 pub enum BezierError {
     /// Error indicating that control points are out of the valid range [0, 1].
-    #[error("Control points must be in the range [0, 1], but got: ({x1}, {y1}), ({x2}, {y2})")]
     InvalidControlPoint { x1: f32, y1: f32, x2: f32, y2: f32 },
 
     /// Error for failing to calculate the parameter `t` for a given x-coordinate.
-    #[error("Failed to find parameter t for x = {0}")]
     ParameterCalculationError(f32),
+}
+
+impl Display for BezierError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        match self {
+            BezierError::InvalidControlPoint { x1, y1, x2, y2 } => {
+                write!(
+                    f,
+                    "Control points must be in the range [0, 1], but got: ({}, {}), ({}, {})",
+                    x1, y1, x2, y2
+                )
+            }
+            BezierError::ParameterCalculationError(x) => {
+                write!(f, "Failed to find parameter t for x = {}", x)
+            }
+        }
+    }
+}
+
+impl Error for BezierError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        // If you don't have a nested error, return None.
+        None
+    }
 }
 
 /// A simple 2D point represented as (x, y).
